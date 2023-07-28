@@ -6,7 +6,7 @@ import '../Controllers/ItemController.dart';
 import '../Utils/BrandsWidget.dart';
 import '../Utils/CustomBottomSheetWidget.dart';
 import '../Utils/HomeAppBar.dart';
-import '../Utils/ItemsWidget.dart';
+import '../Utils/ShimmerLoading.dart';
 import '../Utils/ShopBy.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,17 +23,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // Add the WidgetsBinding observer to listen for lifecycle events
-    WidgetsBinding.instance?.addObserver(this);
-    // Listen for scroll events
+    WidgetsBinding.instance.addObserver(this);
     scrollController.addListener(_listenToScroll);
   }
 
   @override
   void dispose() {
-    // Clean up the WidgetsBinding observer
-    WidgetsBinding.instance?.removeObserver(this);
-    // Clean up the scroll controller
+    WidgetsBinding.instance.removeObserver(this);
     scrollController.removeListener(_listenToScroll);
     scrollController.dispose();
     super.dispose();
@@ -84,20 +80,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         horizontal: 10, vertical: 10),
                     child: Row(
                       children: [
-                        Text("Best Deals Near You",
+                        const Text("Best Deals Near You",
                             style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF4C53A5))),
-                        SizedBox(width: 4),
-                        Text("India",
+                        const SizedBox(width: 4),
+                        const Text("India",
                             style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.amberAccent)),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          icon: Icon(Icons.sort_by_alpha, size: 30),
+                          icon: const Icon(Icons.sort_by_alpha, size: 30),
                           onPressed: () {
                             _showSortOptions(context);
                           },
@@ -113,7 +109,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
              SliverPadding(
               padding: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
               sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.58,
                 ),
@@ -141,113 +137,115 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   
   Widget _buildItem(BuildContext context, int index) {
     final itemController = Get.find<ItemController>();
-    if (index < itemController.itemList.length) {
-      var item = itemController.itemList[index];
-      return Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.favorite_border_rounded),
-              ],
-            ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                margin: EdgeInsets.all(10),
-                child: Image.network(
-                  item.image, // Use the image URL from the ListingItem
-                  height: 120,
-                  width: 120,
+    if (itemController.itemList.isEmpty) {
+        return ShimmerLoadingGrid(itemCount: 2);
+      }else{
+      if (index < itemController.itemList.length) {
+        var item = itemController.itemList[index];
+        return Container(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.favorite_border_rounded),
+                ],
+              ),
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Image.network(
+                    item.image, // Use the image URL from the ListingItem
+                    height: 120,
+                    width: 120,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 8),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "₹${item.listingNumPrice}",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFF4C53A5),
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: const EdgeInsets.only(bottom: 8),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "₹${item.listingNumPrice}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF4C53A5),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 8),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                item.marketingName,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF4C53A5),
-                  fontWeight: FontWeight.w500,
+              Container(
+                padding: const EdgeInsets.only(bottom: 8),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item.marketingName,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF4C53A5),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(2),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                item.deviceStorage,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(2),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Condition: ${item.deviceCondition}",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  item.listingState,
-                  style: TextStyle(
+              Container(
+                padding: const EdgeInsets.all(2),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item.deviceStorage,
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                Spacer(),
-                Text(
-                  item.listingDate,
-                  style: TextStyle(
+              ),
+              Container(
+                padding: const EdgeInsets.all(2),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Condition: ${item.deviceCondition}",
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else {
-      itemController.loadMoreItems(); // Fetch more items when reaching the end
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 32),
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
+              ),
+              Row(
+                children: [
+                  Text(
+                    item.listingState,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    item.listingDate,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      } else {
+        itemController.loadMoreItems(); // Fetch more items when reaching the end
+        return ShimmerLoadingGrid(itemCount: 2);
+      }
+
+      }
   }
 
   void _showSortOptions(BuildContext context) {
@@ -265,19 +263,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 // Filters and Clear Filter row
                 Row(
                   children: [
-                    Text(
+                    const Text(
                       "Filters",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     TextButton(
                       onPressed: () {
                         // Add code to clear filters here
                       },
-                      child: Text(
+                      child: const Text(
                         "Clear Filters",
                         style: TextStyle(
                           fontSize: 16,
@@ -287,7 +285,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 // Brands and MultiSelectListView
                 BottomSheetWidget(
                     text: "Brands",
@@ -307,13 +305,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 BottomSheetWidget(
                     text: "Brands",
                     items: ['All', 'Apple', 'Google', 'Samsung', 'Realme']),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 // Submit button
                 ElevatedButton(
                   onPressed: () {
                     // Add code to handle the submit button action here
                   },
-                  child: Text("Submit"),
+                  child: const Text("Submit"),
                 ),
               ],
             ),
