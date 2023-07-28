@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class BrandsWidget extends StatelessWidget{
+  const BrandsWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               elevation: 5,
               color: Colors.white,
               child: Image.asset(
@@ -20,7 +22,7 @@ class BrandsWidget extends StatelessWidget{
               )
             ),
               Card(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               elevation: 5,
               color: Colors.white,
               child: Image.asset(
@@ -30,7 +32,7 @@ class BrandsWidget extends StatelessWidget{
               )
             ),
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               elevation: 5,
               color: Colors.white,
               child: Image.asset(
@@ -40,7 +42,7 @@ class BrandsWidget extends StatelessWidget{
               )
             ),
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               elevation: 5,
              color: Colors.white,
               child: Image.asset(
@@ -50,7 +52,7 @@ class BrandsWidget extends StatelessWidget{
               )
             ),
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               elevation: 8,
               color: Colors.white,
               child: Image.asset(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../Controllers/HomePageController.dart';
 import '../Controllers/ItemController.dart';
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget _buildItem(BuildContext context, int index) {
     final itemController = Get.find<ItemController>();
     if (itemController.itemList.isEmpty) {
-      return ShimmerLoadingGrid(itemCount: 2);
+      return const ShimmerLoadingGrid(itemCount: 2);
     } else {
       if (index < itemController.itemList.length) {
         var item = itemController.itemList[index];
@@ -149,11 +150,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey
-                    .withOpacity(0.5), 
-                spreadRadius: 2, 
-                blurRadius: 5, 
-                offset: Offset(0, 3), 
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -169,10 +169,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 onTap: () {},
                 child: Container(
                   margin: const EdgeInsets.all(10),
-                  child: Image.network(
-                    item.image, // Use the image URL from the ListingItem
+                  child: CachedNetworkImage(
+                    
+                    imageUrl:
+                        item.image, // Use the image URL from the ListingItem
                     height: 120,
                     width: 120,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(), // Widget to show while the image is loading
+                    errorWidget: (context, url, error) => const Icon(
+                        Icons.error), // Widget to show on image loading error
                   ),
                 ),
               ),
@@ -251,7 +257,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       } else {
         itemController
             .loadMoreItems(); // Fetch more items when reaching the end
-        return ShimmerLoadingGrid(itemCount: 2);
+        return const ShimmerLoadingGrid(itemCount: 2);
       }
     }
   }

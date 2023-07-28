@@ -4,7 +4,7 @@ class BottomSheetWidget extends StatefulWidget {
   final String text;
   final List<String> items;
 
-  BottomSheetWidget({required this.text, required this.items});
+  const BottomSheetWidget({super.key, required this.text, required this.items});
 
   @override
   _MultiSelectListViewState createState() => _MultiSelectListViewState();
@@ -39,12 +39,12 @@ class _MultiSelectListViewState extends State<BottomSheetWidget> {
       children: [
         Text(
           widget.text,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Container(
           height: 50,
           child: ListView.builder(
@@ -60,7 +60,7 @@ class _MultiSelectListViewState extends State<BottomSheetWidget> {
                       borderRadius: BorderRadius.circular(20),
                       color: isSelected ? Colors.blue[300] : Colors.white,
                       ),
-                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
                   child: Center(
                     child: Text(
                       item,

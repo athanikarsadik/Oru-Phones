@@ -92,6 +92,8 @@ class HomeAppBar extends StatelessWidget {
 }
 
 class CustomeSearchDelegate extends SearchDelegate {
+  @override
+  String get searchFieldLabel => 'Search here..';
   List<String> searchTerms = [
   ];
   @override
