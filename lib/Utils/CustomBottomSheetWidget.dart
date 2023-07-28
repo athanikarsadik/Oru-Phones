@@ -17,7 +17,6 @@ class _MultiSelectListViewState extends State<BottomSheetWidget> {
   void initState() {
     super.initState();
     if (widget.items.isNotEmpty) {
-      // Set the first item as the default selected item
       selectedItems.add(widget.items.first);
     }
   }

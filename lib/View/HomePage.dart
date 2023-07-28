@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,8 +104,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ),
             ),
           ),
-          Obx( () =>
-             SliverPadding(
+          Obx(
+            () => SliverPadding(
               padding: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -128,18 +127,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ),
     );
   }
- 
+
   void _listenToScroll() {
     if (scrollController.position.extentAfter == 0) {
       itemController.loadMoreItems();
     }
   }
-  
+
   Widget _buildItem(BuildContext context, int index) {
     final itemController = Get.find<ItemController>();
     if (itemController.itemList.isEmpty) {
-        return ShimmerLoadingGrid(itemCount: 2);
-      }else{
+      return ShimmerLoadingGrid(itemCount: 2);
+    } else {
       if (index < itemController.itemList.length) {
         var item = itemController.itemList[index];
         return Container(
@@ -148,6 +147,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey
+                    .withOpacity(0.5), 
+                spreadRadius: 2, 
+                blurRadius: 5, 
+                offset: Offset(0, 3), 
+              ),
+            ],
           ),
           child: Column(
             children: [
@@ -241,11 +249,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ),
         );
       } else {
-        itemController.loadMoreItems(); // Fetch more items when reaching the end
+        itemController
+            .loadMoreItems(); // Fetch more items when reaching the end
         return ShimmerLoadingGrid(itemCount: 2);
       }
-
-      }
+    }
   }
 
   void _showSortOptions(BuildContext context) {
@@ -253,6 +261,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       context: context,
       backgroundColor: Colors.pink[50],
       builder: (BuildContext context) {
+        void resetFilters() {
+          controller.setSelectedBrand(
+              0); // Assuming you have a function to set selected brand in your controller
+          controller.setSelectedRam(
+              0); // Assuming you have a function to set selected RAM in your controller
+          controller.setSelectedStorage(
+              0); // Assuming you have a function to set selected storage in your controller
+          controller.setSelectedCondition(
+              0); // Assuming you have a function to set selected condition in your controller
+        }
+
         return SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(16),
@@ -273,7 +292,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     const Spacer(),
                     TextButton(
                       onPressed: () {
-                        // Add code to clear filters here
+                        resetFilters();
                       },
                       child: const Text(
                         "Clear Filters",
@@ -286,30 +305,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Brands and MultiSelectListView
+                BottomSheetWidget(text: "Brands", items: controller.topBrands),
+                BottomSheetWidget(text: "Ram", items: controller.ramOptions),
                 BottomSheetWidget(
-                    text: "Brands",
-                    items: ['All', 'Apple', 'Google', 'Samsung', 'Realme']),
+                    text: "Storage", items: controller.storageOptions),
                 BottomSheetWidget(
-                    text: "Ram",
-                    items: ['All', '1 GB', '2 GB', '3 GB', '4 GB']),
-                BottomSheetWidget(
-                    text: "Storage",
-                    items: ['All', '64 GB', '128 GB', '256 GB', '512 GB']),
-                BottomSheetWidget(
-                    text: "Conditions",
-                    items: ['All', 'Like new', 'Excellent', 'Good']),
-                BottomSheetWidget(
-                    text: "Warranty",
-                    items: ['All', 'Brand Warrenty', 'Seller warrenty']),
-                BottomSheetWidget(
-                    text: "Brands",
-                    items: ['All', 'Apple', 'Google', 'Samsung', 'Realme']),
+                    text: "Conditions", items: controller.conditions),
                 const SizedBox(height: 16),
                 // Submit button
                 ElevatedButton(
                   onPressed: () {
                     // Add code to handle the submit button action here
+                    Navigator.pop(context);
                   },
                   child: const Text("Submit"),
                 ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'dart:convert';
 
-import '../Controllers/Api.dart';
+import 'package:http/http.dart' as http;
 
 class HomeAppBar extends StatelessWidget {
   @override
@@ -92,16 +93,12 @@ class HomeAppBar extends StatelessWidget {
 
 class CustomeSearchDelegate extends SearchDelegate {
   List<String> searchTerms = [
-    "Apple Iphone 14",
-    "Samsung Galaxy m6",
-    "MI note 12 pro",
-    "realme"
   ];
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-          icon: Icon(Icons.clear,color:Colors.black),
+          icon: Icon(Icons.clear, color: Colors.black),
           onPressed: () {
             query = "";
           })
@@ -111,34 +108,43 @@ class CustomeSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-        icon: Icon(Icons.arrow_back,color:Colors.black),
+        icon: Icon(Icons.arrow_back, color: Colors.black),
         onPressed: () {
           close(context, null);
         });
   }
 
- @override
-Widget buildResults(BuildContext context) {
-  List<String> matchQuery = [];
-  for (var phone in searchTerms) {
-    if (phone.toLowerCase().contains(query.toLowerCase())) {
-      matchQuery.add(phone);
-    }
+  @override
+  Widget buildResults(BuildContext context) {
+    return FutureBuilder<List<String>>(
+      future: _searchModel(query),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the future to complete, show a loading indicator
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          // If an error occurred during the searchModel API call, display an error message
+          return Center(
+            child: Text('Error fetching search results'),
+          );
+        } else {
+          // If the future has completed successfully, display the search results
+          List<String> searchResults = snapshot.data ?? [];
+          return ListView.builder(
+            itemCount: searchResults.length,
+            itemBuilder: (context, index) {
+              var result = searchResults[index];
+              return ListTile(
+                title: Text(result),
+              );
+            },
+          );
+        }
+      },
+    );
   }
-  // Call the search API here
-  Api api = Api();
-  var response = api.searchModel(query);
-
-  return ListView.builder(
-    itemCount: matchQuery.length,
-    itemBuilder: (context, index) {
-      var result = matchQuery[index];
-      return ListTile(
-        title: Text(result),
-      );
-    },
-  );
-}
 
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -159,4 +165,33 @@ Widget buildResults(BuildContext context) {
         });
   }
 
+  Future<List<String>> _searchModel(String query) async {
+    String url =
+        'https://dev2be.oruphones.com/api/v1/global/assignment/searchModel';
+    String body = '{"searchModel": "$query"}'; // JSON payload as a string
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json'
+        }, // Set the request headers
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        // Request successful, handle the response data here
+        final decodedData = json.decode(response.body);
+        List<String> searchResults = List<String>.from(decodedData['models']);
+        return searchResults;
+      } else {
+        // Request failed, throw an exception with the error message
+        throw Exception('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred during the request
+      print('Error: $e');
+      throw Exception('Error: $e');
+    }
+  }
 }
