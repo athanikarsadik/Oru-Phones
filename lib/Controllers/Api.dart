@@ -35,7 +35,7 @@ Future<void> getFilters() async {
 
 // For POST: https://dev2be.oruphones.com/api/v1/global/assignment/searchModel
 // Payload: { "searchModel": "Apple iPhone 12" }
-Future<http.Response> searchModel(String query) async {
+Future<List> searchModel(String query) async {
   String url = 'https://dev2be.oruphones.com/api/v1/global/assignment/searchModel';
   String body = '{"searchModel": "$query"}'; // JSON payload as a string
 
@@ -49,7 +49,7 @@ Future<http.Response> searchModel(String query) async {
     if (response.statusCode == 200) {
       // Request successful, handle the response data here
       print(response.body);
-      return response;
+      return response as List;
     } else {
       // Request failed, throw an exception with the error message
       throw Exception('Error: ${response.statusCode}');

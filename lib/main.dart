@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'Controllers/Api.dart';
 import 'Controllers/ItemController.dart';
 import 'View/HomePage.dart';
 
 void main() {
   runApp(const MyApp());
   Get.put(ItemController(),permanent: true);
- 
+  Api api = Api();
+  print(api.getFilters());
+  print(api.searchModel("Apple iPhone 12"));
 }
 
 class MyApp extends StatelessWidget {
